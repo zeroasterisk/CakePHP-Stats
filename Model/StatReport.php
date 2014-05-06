@@ -45,9 +45,9 @@ class StatReport extends StatsAppModel {
 	 * @var array $belongsTo	 * @access public
 	 */
 	public $belongsTo = array(
-		'Site' => array(
-			'className' => 'Site',
-			'foreignKey' => 'site_id',
+		'StatReportPlan' => array(
+			'className' => 'StatReportPlan',
+			'foreignKey' => 'stat_report_plan_id',
 		)
 	);
 	/**
@@ -58,8 +58,8 @@ class StatReport extends StatsAppModel {
 	 */
 
 	public $hasMany = array(
-		'StatApiLog' => array(
-			'className' => 'StatApiLog',
+		'StatReportApiLog' => array(
+			'className' => 'StatReportApiLog',
 			'foreignKey' => 'stat_report_id',
 			'dependent' => false,
 		),
@@ -82,6 +82,15 @@ class StatReport extends StatsAppModel {
 	public function __construct($id = false, $table = null, $ds = null) {
 		parent::__construct($id, $table, $ds);
 		$this->validate = array(
+			/* we will allow one-off reports
+			'stat_report_plan_id' => array(
+				'notEmpty' => array(
+					'rule' => array('notEmpty'),
+					'required' => 'create',
+					'allowEmpty' => false,
+					'message' => __('Please enter a Stat Report Plan', true)
+				),
+			), */
 			'start' => array(
 				'date' => array(
 					'rule' => array('date'),

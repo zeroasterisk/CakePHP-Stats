@@ -17,6 +17,16 @@ class StatReportMetric extends StatsAppModel {
 	 * @var array
 	 * @access public
 	 */
+	public $actsAs = array(
+		'Search.Searchable',
+		/*
+		'Icing.Versionable' => array(
+			'versions' => 10,
+			'minor_timeframe' => 300,
+			'bind' => false,
+		),
+		 */
+	);
 
 	/**
 	 * Validation parameters - initialized in constructor
@@ -45,13 +55,34 @@ class StatReportMetric extends StatsAppModel {
 	 * @var array $hasMany
 	 * @access public
 	 */
-
 	public $hasMany = array(
 		'StatReportValue' => array(
-			'className' => 'StatReportValue',
+			'className' => 'Stats.StatReportValue',
 			'foreignKey' => 'stat_report_metric_id',
 			'dependent' => false,
-		)
+		),
+		'StatReportMetricsStatReportPlan' => array(
+			'className' => 'Stats.StatReportMetricsStatReportPlan',
+			'foreignKey' => 'stat_report_metric_id',
+			'dependent' => false,
+		),
+	);
+
+	/**
+	 * hasAndBelongsToMany association
+	 *
+	 * @var array $hasMany
+	 * @access public
+	 */
+	public $hasAndBelongsToMany = array(
+		'StatReportPlan' => array(
+			'className' => 'Stats.StatReportPlan',
+			'joinTable' => 'stat_report_metrics_stat_report_plans',
+			'foreignKey' => 'stat_report_metric_id',
+			'associationForeignKey' => 'stat_report_plan_id',
+			'unique' => true,
+			'with' => 'Stats.StatReportMetricsStatReportPlan',
+		),
 	);
 
 
@@ -92,6 +123,18 @@ class StatReportMetric extends StatsAppModel {
 	}
 
 	/**
+	 *
+	 *
+	 */
+	public function beforeSave($options = array()) {
+		if (!empty($this->data['StatReportMetric']['name']) && empty($this->data['StatReportMetric']['label']) && isset($this->data['StatReportMetric']['label'])) {
+			$this->data['StatReportMetric']['label'] = $this->data['StatReportMetric']['name'];
+
+		}
+		return parent::beforeSave($options);
+	}
+
+	/**
 	 * Adds a new record to the database
 	 *
 	 * @param array post data, should be Contoller->data
@@ -121,7 +164,9 @@ class StatReportMetric extends StatsAppModel {
 	 */
 	public function edit($id = null, $data = null) {
 		$statReportMetric = $this->find('first', array(
-			'contain' => array(),
+			'contain' => array(
+				'StatReportPlan' => array('id', 'name'),
+			),
 			'conditions' => array(
 				"{$this->alias}.{$this->primaryKey}" => $id,
 			)
@@ -158,9 +203,10 @@ class StatReportMetric extends StatsAppModel {
 	 */
 	public function view($id = null) {
 		$statReportMetric = $this->find('first', array(
-			'contain' => array(),
-			'conditions' => array(
-				"{$this->alias}.{$this->primaryKey}" => $id			)
+			'contain' => array(
+				'StatReportPlan',
+			),
+			'conditions' => array("{$this->alias}.{$this->primaryKey}" => $id)
 		));
 		if (empty($statReportMetric)) {
 			throw new OutOfBoundsException(__('Invalid Stat Report Metric', true));

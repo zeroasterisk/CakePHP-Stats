@@ -1,20 +1,20 @@
 <?php
 /* StatReportValue Fixture generated on: 2014-05-05 21:05:23 : 1399339523 */
 class StatReportValueFixture extends CakeTestFixture {
-/**
- * Name
- *
- * @var string
- * @access public
- */
+	/**
+	 * Name
+	 *
+	 * @var string
+	 * @access public
+	 */
 	public $name = 'StatReportValue';
 
-/**
- * Fields
- *
- * @var array
- * @access public
- */
+	/**
+	 * Fields
+	 *
+	 * @var array
+	 * @access public
+	 */
 	public $fields = array(
 		'id' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 36, 'key' => 'primary', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'stat_report_id' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 36, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -33,15 +33,15 @@ class StatReportValueFixture extends CakeTestFixture {
 			'mad' => array('column' => array('mad', 'stat_report_metric_id'), 'unique' => 0),
 			'std' => array('column' => array('std', 'stat_report_metric_id'), 'unique' => 0)
 		),
-		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci')
 	);
 
-/**
- * Records
- *
- * @var array
- * @access public
- */
+	/**
+	 * Records
+	 *
+	 * @var array
+	 * @access public
+	 */
 	public $records = array(
 		array(
 			'id' => 'statreportvalue-1',

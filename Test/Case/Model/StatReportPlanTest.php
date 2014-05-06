@@ -1,8 +1,8 @@
 <?php
-/* StatReportMetric Test cases generated on: 2014-05-05 21:05:54 : 1399339554*/
-App::uses('StatReportMetric', 'Stats.Model');
+/* StatReportPlan Test cases generated on: 2014-05-06 12:05:41 : 1399394261*/
+App::uses('StatReportPlan', 'Stats.Model');
 
-class StatReportMetricTestCase extends CakeTestCase {
+class StatReportPlanTestCase extends CakeTestCase {
 
 	/**
 	 * Fixtures
@@ -29,8 +29,9 @@ class StatReportMetricTestCase extends CakeTestCase {
 	 */
 	public function startTest($method) {
 		parent::startTest($method);
-		$this->StatReportMetric = ClassRegistry::init('Stats.StatReportMetric');
-		$this->record = $this->StatReportMetric->find('first');
+		$this->StatReportPlan = ClassRegistry::init('StatReportPlan');
+		$fixture = new StatReportPlanFixture();
+		$this->record = array('StatReportPlan' => $fixture->records[0]);
 	}
 
 	/**
@@ -42,29 +43,29 @@ class StatReportMetricTestCase extends CakeTestCase {
 	 */
 	public function endTest($method) {
 		parent::endTest($method);
-		unset($this->StatReportMetric);
+		unset($this->StatReportPlan);
 		ClassRegistry::flush();
 	}
 
 	/**
-	 * Test adding a Stat Report Metric
+	 * Test adding a Stat Report Plan
 	 *
 	 * @return void
 	 * @access public
 	 */
 	public function testAdd() {
 		$data = $this->record;
-		unset($data['StatReportMetric']['id']);
-		$data['StatReportMetric']['name'] = time();
+		unset($data['StatReportPlan']['id']);
 		// beware of unique contraints
-		$result = $this->StatReportMetric->add($data);
+		$result = $this->StatReportPlan->add($data);
+		$this->assertTrue(empty($this->StatReportPlan->validationErrors));
 		$this->assertTrue($result);
 		// Verify that adds fail without correct/required fields
 		try {
 			$data = $this->record;
-			unset($data['StatReportMetric']['id']);
-			unset($data['StatReportMetric']['name']);
-			$result = $this->StatReportMetric->add($data);
+			unset($data['StatReportPlan']['id']);
+			unset($data['StatReportPlan']['name']);
+			$result = $this->StatReportPlan->add($data);
 			$this->assertTrue(false, 'Expected Exception');
 		} catch (OutOfBoundsException $e) {
 			$this->assertTrue(true, 'Correct Exception Thrown');
@@ -72,28 +73,28 @@ class StatReportMetricTestCase extends CakeTestCase {
 	}
 
 	/**
-	 * Test editing a Stat Report Metric
+	 * Test editing a Stat Report Plan
 	 *
 	 * @return void
 	 * @access public
 	 */
 	public function testEdit() {
-		$result = $this->StatReportMetric->edit('statreportmetric-1', null);
-		$expected = $this->StatReportMetric->read(null, 'statreportmetric-1');
-		$this->assertEqual($result['StatReportMetric'], $expected['StatReportMetric']);
+		$result = $this->StatReportPlan->edit('statreportplan-1', null);
+		$expected = $this->StatReportPlan->read(null, 'statreportplan-1');
+		$this->assertEqual($result['StatReportPlan'], $expected['StatReportPlan']);
 		// put invalidated data here
 		$data = $this->record;
-		//$data['StatReportMetric']['name'] = null;
-		$result = $this->StatReportMetric->edit('statreportmetric-1', $data);
+		//$data['StatReportPlan']['name'] = null;
+		$result = $this->StatReportPlan->edit('statreportplan-1', $data);
 		$this->assertTrue($result);
 		$data = $this->record;
-		$result = $this->StatReportMetric->edit('statreportmetric-1', $data);
+		$result = $this->StatReportPlan->edit('statreportplan-1', $data);
 		$this->assertTrue($result);
-		$result = $this->StatReportMetric->read(null, 'statreportmetric-1');
+		$result = $this->StatReportPlan->read(null, 'statreportplan-1');
 		// put record specific asserts here for example
-		// $this->assertEqual($result['StatReportMetric']['name'], $data['StatReportMetric']['name']);
+		// $this->assertEqual($result['StatReportPlan']['name'], $data['StatReportPlan']['name']);
 		try {
-			$this->StatReportMetric->edit('wrong_id', $data);
+			$this->StatReportPlan->edit('wrong_id', $data);
 			$this->assertTrue(false, 'Expected Exception');
 		} catch (OutOfBoundsException $e) {
 			$this->assertTrue(true, 'Correct Exception Thrown');
@@ -101,22 +102,21 @@ class StatReportMetricTestCase extends CakeTestCase {
 	}
 
 	/**
-	 * Test viewing a single Stat Report Metric
+	 * Test viewing a single Stat Report Plan
 	 *
 	 * @return void
 	 * @access public
 	 */
 	public function testView() {
-		$result = $this->StatReportMetric->view('statreportmetric-1');
-		$this->assertTrue(isset($result['StatReportMetric']));
-		$this->assertEqual($result['StatReportMetric']['id'], 'statreportmetric-1');
+		$result = $this->StatReportPlan->view('statreportplan-1');
+		$this->assertTrue(isset($result['StatReportPlan']));
+		$this->assertEqual($result['StatReportPlan']['id'], 'statreportplan-1');
 		try {
-			$result = $this->StatReportMetric->view('wrong_id');
+			$result = $this->StatReportPlan->view('wrong_id');
 			$this->assertTrue(false, 'Expected Exception');
 		} catch (OutOfBoundsException $e) {
 			$this->assertTrue(true, 'Correct Exception Thrown');
 		}
 	}
-
 
 }

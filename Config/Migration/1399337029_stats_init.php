@@ -58,8 +58,9 @@ class StatsInit extends CakeMigration {
 				'stat_report_metrics' => array(
 					'id' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 36, 'key' => 'primary', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 					'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
-					'name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 64, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-					'abbr' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 8, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+					'name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 64, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'comment' => 'Admin only reference to metric'),
+					'label' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 64, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'comment' => 'Label for reports'),
+					'abbr' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 8, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'comment' => 'Short version of Label for reports'),
 					'model' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 32, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 					'method' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 32, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 					'params' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 128, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -73,20 +74,50 @@ class StatsInit extends CakeMigration {
 					'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci')
 				),
 
+				'stat_report_plans' => array(
+					'id' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 36, 'key' => 'primary', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+					'join_model' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 64, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'comment' => 'optional join to any other model'),
+					'join_id' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 36, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'comment' => 'optional join to any other model'),
+					'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
+					'name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 64, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'comment' => 'Admin only reference to metric'),
+					'label' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 64, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'comment' => 'Label for reports'),
+					'ranges' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 64, 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'comment' => 'CSV: month, week, day, etc.'),
+					'indexes' => array(
+						'PRIMARY' => array('column' => 'id', 'unique' => 1),
+						'main' => array('column' => array('join_model', 'join_id', 'name'), 'unique' => 0),
+						'names' => array('column' => array('name', 'label'), 'unique' => 0),
+						'ranges' => array('column' => array('ranges'), 'unique' => 0)
+					),
+					'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci')
+				),
+
 				'stat_reports' => array(
 					'id' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 36, 'key' => 'primary', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-					'join_id' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 36, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'comment' => 'optional join to any other model'),
+					'stat_report_plan_id' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 36, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'comment' => 'optional join to any other model'),
 					'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 					'start' => array('type' => 'date', 'null' => true, 'default' => null),
 					'stop' => array('type' => 'date', 'null' => true, 'default' => null),
 					'range' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 16, 'collate' => 'utf8_general_ci', 'charset' => 'utf8', 'comment' => 'month, week, day, etc.'),
 					'indexes' => array(
 						'PRIMARY' => array('column' => 'id', 'unique' => 1),
-						'a' => array('column' => array('join_id', 'start', 'stop'), 'unique' => 0),
-						'b' => array('column' => array('join_id', 'range', 'start'), 'unique' => 0)
+						'a' => array('column' => array('stat_report_plan_id', 'start', 'stop'), 'unique' => 0),
+						'b' => array('column' => array('stat_report_plan_id', 'range', 'start'), 'unique' => 0)
 					),
-					'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+					'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci')
 				),
+
+				'stat_report_metrics_stat_report_plans' => array(
+					'id' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 36, 'key' => 'primary', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+					'stat_report_metric_id' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 36, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+					'stat_report_plan_id' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 36, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+					'indexes' => array(
+						'PRIMARY' => array('column' => 'id', 'unique' => 1),
+						'm' => array('column' => 'stat_report_plan_id', 'unique' => 0),
+						'p' => array('column' => 'stat_report_metric_id', 'unique' => 0),
+					),
+					'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci')
+				),
+
 			),
 		),
 		'down' => array(
@@ -94,6 +125,8 @@ class StatsInit extends CakeMigration {
 				'stat_report_api_logs',
 				'stat_report_metrics',
 				'stat_report_values',
+				'stat_report_metrics_stat_report_plans',
+				'stat_report_plans',
 				'stat_reports',
 			),
 		),
@@ -118,6 +151,59 @@ class StatsInit extends CakeMigration {
 	 * @access public
 	 */
 	public function after($direction) {
+		if ($direction != 'up') {
+			return true;
+		}
+		$defaults = array(
+			'StatReportMetric' => array(
+				array(
+					'id' => 'count-all-users',
+					'name' => 'Count of All Users',
+					'label' => 'All Users',
+					'abbr' => 'All',
+					'model' => 'User',
+					'method' => 'statsCount',
+				),
+				array(
+					'id' => 'count-active-users',
+					'name' => 'Count of Active Users',
+					'label' => 'Active Users',
+					'abbr' => 'Active',
+					'model' => 'User',
+					'method' => 'statsCount',
+					'params' => '{is_active:1}',
+				),
+			),
+			'StatReportPlan' => array(
+				array(
+					'id' => 'example-1',
+					'name' => 'Example Report',
+					'label' => 'Example for Users',
+					'ranges' => 'monthly,weekly,daily',
+				)
+			),
+			'StatReportMetricsStatReportPlan' => array(
+				array(
+					'stat_report_metric_id' => 'count-all-users',
+					'stat_report_plan_id' => 'example-1',
+				),
+				array(
+					'stat_report_metric_id' => 'count-active-users',
+					'stat_report_plan_id' => 'example-1',
+				)
+			),
+		);
+		foreach ($defaults as $model => $records) {
+			$Model = ClassRegistry::init("Stats.{$model}");
+			foreach ($records as $record) {
+				$Model->create(false);
+				if (!$Model->save(array($model => $record))) {
+					debug($record);
+					debug($Model->validationErrors);
+					throw new OutOfBoundsException("Unable to save $model record");
+				}
+			}
+		}
 		return true;
 	}
 }
